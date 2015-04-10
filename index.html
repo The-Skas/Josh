@@ -19,50 +19,41 @@
   <script src="js/pathhandler.js"></script>
   <script src="js/example.js"></script>
   <style type="text/css">
+	#center-panel {
+	  left:50%;
+	  top:50%;
+	  position: fixed;
+    }
     #shell-panel {
-      display: none;
-      height: 400px;
-      width: 97.0%;
-      opacity: 0.9;
+      height: 600px;
+      width: 800px;
+	  
+	  margin-left: -400px;
+	  margin-top: -300px;
+	  position: relative;
       background-color: #002f05;
       color: #00fe00;
-      position: fixed;
       padding: 20px 20px 20px 20px;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      font-family: 'Source Code Pro', sans-serif;
-      font-size: 0.9em;
+      font-family: 'Source Code Pro';
       overflow: scroll;
       overflow-x: hidden;
       overflow-y: scroll;
+      border: 1px dashed #E6EBE0;
     }
-
-    #cmd1 {
-      border-style: solid;
-      border-width: 1px;
-      display: inline-block;
-      width: 200px;
-      height: 20px;
-    }
-
+	
   </style>
 </head>
 <body>
-<div id="shell-panel">
-  <div id="shell-view"></div>
-</div>
-<div>
-  <p>Press <strong>~</strong> to activate console.</p>
+<div id="center-panel">
+
+	<div id="shell-panel">
+	  <div id="shell-view">
+		<p>Press <strong>~</strong> to activate console.</p>
+
+	  </div>
+	</div>
 </div>
 
-<p>
-  Cmd1: <span id="cmd1"></span>
-</p>
-
-<p>
-  Cmd2: <input id="cmd2">
-</p>
 <script>
 
 

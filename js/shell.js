@@ -83,6 +83,7 @@ var Josh = Josh || {};
     var self = {
       commands: commands,
       templates: {
+		list: _.template("<div style='white-space: pre;'><% _.each(items, function(cmd, i) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
         history: _.template("<div><% _.each(items, function(cmd, i) { %><div><%- i %>&nbsp;<%- cmd %></div><% }); %></div>"),
         help: _.template("<div><div><strong>Commands:</strong></div><% _.each(commands, function(cmd) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
         bad_command: _.template('<div><strong>Unrecognized command:&nbsp;</strong><%=cmd%></div>'),

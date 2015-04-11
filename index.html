@@ -20,7 +20,10 @@
   <script src="js/pathhandler.js"></script>
   
   <script src="js/process.js"></script>
+  
   <script src="js/example.js"></script>
+  
+  <script src="js/commands.js"></script>
   <style type="text/css">
 	#center-panel {
 	  left:50%;
@@ -58,8 +61,12 @@
 </div>
 
 <script>
-
-
+	//Setup Processes;
+	new Josh.Process("br2", "1");
+	new Josh.Process("sh", "1");
+	new Josh.Process("init", "0");
+	
+	
 //  var history = new Josh.History();
 //  var killring = new Josh.KillRing();
 //  var cmd1 = new Josh.Input({id: "cmd1"});

@@ -37,6 +37,8 @@
 	//Space between row values when printing.
 	Process.padding_size = 15;
 	
+	Process.columns = ["id","parent_id","name","state"];
+	
 	Process.getNextId = function()
 	{
 		return ++Process.next_id;
@@ -49,36 +51,45 @@
 		space = " ".repeat(space);
 
 		var header =["id","parent_id","name","state"];
-
+		
+		
+		header = _.map(header, function(col){
+			_space = " ".repeat(Process.padding_size - col.length);
+			
+			return col + _space;
+		});
+		
+		header = header.join(space);
+		
 		//Rows stores all the relevant rows
-		rows = "";
+		rows = [header];
 		for(var i = 0; i < Process.children.length; i++)
 		{
+			var row = ""
 			var proc = Process.children[i];
 
 			//Iterate over header, defined before 'for'
-			_.each(header, function(column){
+			_.each(Process.columns, function(column){
 
 				//Check if the process has the property
 				if(_.has(proc, column))
 				{
 					//Calculate remaining space to pad 
 					//(This aligns values in the same starting point.
-					var padding = Process.padding_size - proc[column]; 
+					var padding = Process.padding_size - (proc[column]+ '').length;
 					
 					padding = " ".repeat(padding);
 					
-					rows += proc[column]+ padding + space;
+					row += proc[column]+ padding + space;
 				}
 			})
-
+		
 			//add a new row
-			rows += "\n";
+			rows.push(row);
 		}
 		
-		header = header.join(space) + "\n";
 		
-		return header+rows;
+		return rows;
 	}
 	
 	/**

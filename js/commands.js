@@ -1,26 +1,6 @@
 
 var shell = Josh.Instance.Shell;
 
-shell.setCommandHandler("hello", {
-    exec: function(cmd, args, callback) {
-        blu_event(cmd, args);
-
-        var arg = args[0] || '';
-        var response = "who is this " + arg + " you are talking to?";
-        if(arg === 'josh') {
-            response = 'pleased to meet you.';
-        } else if(arg === 'world') {
-            response = 'world says hi.'
-        } else if(!arg) {
-            response = 'who are you saying hello to?';
-        }
-        callback(response);
-    },
-    completion: function(cmd, arg, line, callback) {
-        callback(shell.bestMatch(arg, ['world', 'josh']))
-    }
-});
-
 /**
 	ps - Prints processes
 */
@@ -90,5 +70,59 @@ shell.setCommandHandler("kill", {
     },
     completion: function(cmd, arg, line, callback) {
         callback(shell.bestMatch(arg, ['']))
+    }
+});
+
+shell.setCommandHandler("cat", {
+    exec: function(cmd, args, callback) {
+        var arg = args[0] || '';
+        
+        if(args[0] == "-h")
+        {
+            return callback(shell.templates.pre({
+                items:  "SYNTAX:\n"+
+                        "   cat file_name\n\n"+
+                        "DESCRIPTION\n"+
+                        "  Prints the contents of a specific file"+
+                        "\n"
+            }));
+        }
+
+        var files = Josh.Instance.PathHandler.files;
+        
+        var current_path = Josh.Instance.PathHandler.current.path;
+
+        var file_to_print = null;
+
+        if(files[current_path])
+        {
+            file_to_print = files[current_path][arg];
+        }
+        
+        if(file_to_print) {
+            response = file_to_print.data;
+        }
+        else{
+            response =  "Invalid File.";
+        }
+        
+        
+        callback(shell.templates.pre({items: response}));
+    },
+    completion: function(cmd, arg, line, callback) {
+        var files = Josh.Instance.PathHandler.files;
+        
+        var current_path = Josh.Instance.PathHandler.current.path;
+
+        var list_files = [];
+
+        //We check to see if weve created an object or not.
+        //undefined means we havent other wise we have.
+        if(files[current_path])
+        {
+            list_files = Object.keys(files[current_path]);
+        }
+        
+        callback(shell.bestMatch(arg, list_files))
     }
 });

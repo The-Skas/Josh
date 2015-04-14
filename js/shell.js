@@ -349,6 +349,7 @@ var Josh = Josh || {};
       var handler = getHandler(cmd);
 
       // Added for Blui - UE4
+      console.log(cmd +"--"+args+"--"+cmdtext)
       try {
         blu_event(cmd, args);
       }

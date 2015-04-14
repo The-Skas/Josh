@@ -46,7 +46,7 @@
 	
 	//Prints all child processes as a table
 	Process.printChildren = function(space){
-		//Default parameter as 5
+			//Default parameter as 5
 		space = typeof a !== 'undefined' ? space : 5;
 
 		space = " ".repeat(space);

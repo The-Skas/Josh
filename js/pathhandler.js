@@ -30,8 +30,15 @@ var Josh = Josh || {};
     var _original_default = _shell.getCommandHandler('_default');
     var self = {
       current: null,
+      //Stores all files
+      //relevant to the path.
+      files: {
+
+      },
       pathCompletionHandler: pathCompletionHandler,
       commandAndPathCompletionHandler: commandAndPathCompletionHandler,
+      createFile: createFile,
+
       getNode: function(path, callback) {
         callback();
       },
@@ -90,6 +97,10 @@ var Josh = Josh || {};
           return completeChildren(node, '', callback);
         });
       }
+
+    
+
+
       var partial = "";
       var lastPathSeparator = arg.lastIndexOf("/");
       var parent = arg.substr(0, lastPathSeparator + 1);
@@ -118,6 +129,31 @@ var Josh = Josh || {};
       });
     }
 
+    function createFile(path, file, data) {
+      if (!path){
+        path = self.current.path;
+      }
+
+      if($.isEmptyObject(self.files[path])){
+        self.files[path] = {}
+      }
+      //*
+      //Gah, javascript.
+      //*
+      if(self.files[path][file])
+      {
+        return "File "+file+" already exists.";
+      }
+      else
+      {
+        self.files[path][file] = {
+          name: file,
+          path: path,
+          data: data
+        }
+      }
+    }
+
     function completeChildren(node, partial, callback) {
       self.getChildNodes(node, function(childNodes) {
         callback(_shell.bestMatch(partial, _.map(childNodes, function(x) {
@@ -132,7 +168,7 @@ var Josh = Josh || {};
           return callback(_shell.templates.not_found({cmd: 'cd', path: args[0]}));
         }
         self.current = node;
-        return callback();
+      return callback();
       });
     }
 
@@ -156,6 +192,15 @@ var Josh = Josh || {};
       }
       return self.getChildNodes(node, function(children) {
         _console.log("finish render: " + node.name);
+        console.log("Testing files! "+self.files[path])
+
+        var files = self.files[path] ? self.files[path] : {};
+        
+        children = $.extend({}, files, children);
+
+        console.log(self.files[path]);
+        console.log(path);
+        console.log(children);
         callback(_shell.templates.ls({nodes: children}));
       });
     }

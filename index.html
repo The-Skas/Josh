@@ -67,6 +67,11 @@
 	new Josh.Process("init", "0");
   
 
+  // Setup Files.
+  Josh.Instance.PathHandler.createFile("/", "see.txt", 
+    "Don't listen \n"+
+    "Nothing is real.\n"+
+    "Hide while you can.\n");
 
   // Change path.
   Josh.Instance.PathHandler.cd("/usr/me");
@@ -75,7 +80,7 @@
   // Write to Screen
   Josh.Instance.Shell.renderOutput("loading x3h0.one<br>Processing.<br>Loading Profile...", function(){
     
-  })	
+  })
 
   Josh.Instance.Shell.renderOutput("Running System Diagnostics ...", function(){
   })

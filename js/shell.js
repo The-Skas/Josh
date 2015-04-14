@@ -81,9 +81,11 @@ var Josh = Josh || {};
 
     // public methods
     var self = {
+      disable_user_input : false,
       commands: commands,
       templates: {
-		list: _.template("<div style='white-space: pre;'><% _.each(items, function(cmd, i) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
+		    list: _.template("<div style='white-space: pre;'><% _.each(items, function(cmd, i) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
+        pre: _.template("<div style='white-space: pre;'><%- items%></div>"),
         history: _.template("<div><% _.each(items, function(cmd, i) { %><div><%- i %>&nbsp;<%- cmd %></div><% }); %></div>"),
         help: _.template("<div><div><strong>Commands:</strong></div><% _.each(commands, function(cmd) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
         bad_command: _.template('<div><strong>Unrecognized command:&nbsp;</strong><%=cmd%></div>'),
@@ -138,6 +140,10 @@ var Josh = Josh || {};
         _promptHandler = completionHandler;
       },
       render: function() {
+        if(self.disable_user_input)
+        {
+          return;
+        }
         var text = _line.text || '';
         var cursorIdx = _line.cursor || 0;
         if(_searchMatch) {
@@ -270,6 +276,7 @@ var Josh = Josh || {};
       }
       return callback();
     }
+    self.renderOutput = renderOutput;
 
     function activate() {
       _console.log("activating shell");
@@ -340,6 +347,15 @@ var Josh = Josh || {};
       var cmd = parts[0];
       var args = parts.slice(1);
       var handler = getHandler(cmd);
+
+      // Added for Blui - UE4
+      try {
+        blu_event(cmd, args);
+      }
+      catch(err) {
+        console.log("BLUI - Not supported");
+      }
+
       return handler.exec(cmd, args, function(output, cmdtext) {
         renderOutput(output, function() {
           callback(cmdtext)

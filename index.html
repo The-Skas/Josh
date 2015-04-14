@@ -65,8 +65,33 @@
 	new Josh.Process("br2", "1");
 	new Josh.Process("sh", "1");
 	new Josh.Process("init", "0");
-	
-	
+  
+
+
+  // Change path.
+  Josh.Instance.PathHandler.cd("/usr/me");
+
+  Josh.Instance.Shell.disable_user_input = true;
+  // Write to Screen
+  Josh.Instance.Shell.renderOutput("loading x3h0.one<br>Processing.<br>Loading Profile...", function(){
+    
+  })	
+
+  Josh.Instance.Shell.renderOutput("Running System Diagnostics ...", function(){
+  })
+
+  Josh.Instance.Shell.renderOutput("WARNING: Malicious Process 'br2' found.", function(){
+  })
+
+  Josh.Instance.Shell.renderOutput("killing 'br2' Process...", function(){
+  })
+
+  Josh.Instance.Shell.renderOutput("ERROR: unable to kill 'br2'<br> use the 'kill' command to manually terminate process.", function(){
+  })
+  Josh.Instance.Shell.disable_user_input = false;
+
+  Josh.Instance.Shell.activate();
+
 //  var history = new Josh.History();
 //  var killring = new Josh.KillRing();
 //  var cmd1 = new Josh.Input({id: "cmd1"});

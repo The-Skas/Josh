@@ -92,6 +92,16 @@
     // The pathhandler expects to be initialized with the current *directory*, i.e. a path node.
     pathhandler.current = treeroot;
 
+    pathhandler.cd = function(path)
+    {
+      pathhandler.getNode(path, function(node) {
+          pathhandler.current = node;
+          
+        });
+    };
+
+
+
     // `PathHandler` requires two method, `getNode` and `getChildNodes`, to be provided in order to operate.
     //
     // `getNode` gets called with *path* string. This string is completely opaque to `PathHandler`, i.e. constructs such
@@ -251,6 +261,17 @@
           sbin: {},
           share: {
             doc: {}
+          },
+          me:{
+            Documents:{
+
+            },
+            Music: {
+
+            },
+            Work: {
+
+            }
           },
           src: {}
         },

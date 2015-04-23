@@ -72,8 +72,10 @@
         // number to stop backspacing on.
         // default 0, can change depending on how many chars
         // you want to remove at the time
-        this.stopNum = 0;
+        this.stopNum = this.options.stopNum;
 
+        //Get negative indice to stop from.
+        this.stopNumRev = this.options.stopNumRev
         // Looping logic
         this.loop = this.options.loop;
         this.loopCount = this.options.loopCount;
@@ -376,7 +378,10 @@
         attr: null,
         // either html or text
         contentType: 'html',
+        // Stop at index 0
+        stopNum: 0,
         // call when done callback function
+        stopNumRev: 0,
         callback: function() {},
         // starting callback function before each string
         preStringTyped: function() {},

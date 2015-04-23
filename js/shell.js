@@ -36,14 +36,14 @@ var Josh = Josh || {};
     var _activationHandler;
     var _deactivationHandler;
     var _cmdHandlers = {
-      clear: {
-        exec: function(cmd, args, callback) {
-          $(id(_input_id)).parent().empty();
-          callback();
-        }
-      },
+
       help: {
         exec: function(cmd, args, callback) {
+          if(args[0]){
+            // if an arguement is available
+            self.onEnter(args[0]+" -h", callback);
+            return;
+          }
           callback(self.templates.help({commands: commands()}));
         }
       },
@@ -81,13 +81,14 @@ var Josh = Josh || {};
 
     // public methods
     var self = {
+
       disable_user_input : false,
       commands: commands,
       templates: {
 		    list: _.template("<div style='white-space: pre;'><% _.each(items, function(cmd, i) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
         pre: _.template("<div style='white-space: pre;'><%- items%></div>"),
         history: _.template("<div><% _.each(items, function(cmd, i) { %><div><%- i %>&nbsp;<%- cmd %></div><% }); %></div>"),
-        help: _.template("<div><div><strong>Commands:</strong></div><% _.each(commands, function(cmd) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
+        help: _.template("<div>Type 'help [command]' to view command usage.<br><div><strong>Commands:</strong></div><% _.each(commands, function(cmd) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
         bad_command: _.template('<div><strong>Unrecognized command:&nbsp;</strong><%=cmd%></div>'),
         input_cmd: _.template('<div id="<%- id %>"><span class="prompt"></span>&nbsp;<span class="input"><span class="left"/><span class="cursor"/><span class="right"/></span></div>'),
         input_search: _.template('<div id="<%- id %>">(reverse-i-search)`<span class="searchterm"></span>\':&nbsp;<span class="input"><span class="left"/><span class="cursor"/><span class="right"/></span></div>'),
@@ -138,6 +139,29 @@ var Josh = Josh || {};
       },
       onNewPrompt: function(completionHandler) {
         _promptHandler = completionHandler;
+      },
+      onEnter: function(cmdtext, callback) {
+        _console.log("got command: " + cmdtext);
+        var parts = split(cmdtext);
+        var cmd = parts[0];
+        var args = parts.slice(1);
+        var handler = getHandler(cmd);
+
+        // Added for Blui - UE4
+        console.log(callback);
+        console.log(cmd +"--"+args+"--"+cmdtext)
+        try {
+          blu_event(cmd, args);
+        }
+        catch(err) {
+          console.log("BLUI - Not supported");
+        }
+
+        return handler.exec(cmd, args, function(output, cmdtext) {
+          renderOutput(output, function() {
+            callback(cmdtext)
+          }, true);
+        });
       },
       render: function() {
         if(self.disable_user_input)
@@ -261,9 +285,46 @@ var Josh = Josh || {};
       return _cmdHandlers[cmd] || _cmdHandlers._default;
     }
 
-    function renderOutput(output, callback) {
+    self.getHandler = getHandler;
+
+    function renderOutput(output, callback,outputOnly) {
       if(output) {
         $(id(_input_id)).after(output);
+      }
+      $(id(_input_id) + ' .input .cursor').css('textDecoration', '');
+      $(id(_input_id)).removeAttr('id');
+      $(id(_shell_view_id)).append(self.templates.input_cmd({id:_input_id}));
+      if(_promptHandler) {
+        if(outputOnly)
+        {
+          return callback();
+        }
+        return _promptHandler(function(prompt) {
+          self.setPrompt(prompt);
+          return callback();
+        });
+      }
+      return callback();
+    }
+
+    self.renderOutput = renderOutput;
+
+    function renderWaitOutput(output, callback, attrbs) {
+      if(output) {
+        self.disable_user_input = true;
+        Josh.Instance.Shell.deactivate();
+        $(id(_input_id)).typed($.extend({
+              strings: output,
+              typeSpeed: -100,
+              showCursor: false,
+              callback: function(){
+                self.disable_user_input = false;
+                Josh.Instance.Shell.activate();
+              }
+            },
+            (attrbs || {})
+          )
+        );
       }
       $(id(_input_id) + ' .input .cursor').css('textDecoration', '');
       $(id(_input_id)).removeAttr('id');
@@ -276,8 +337,7 @@ var Josh = Josh || {};
       }
       return callback();
     }
-    self.renderOutput = renderOutput;
-
+    self.renderWaitOutput = renderWaitOutput;
     function activate() {
       _console.log("activating shell");
       if(!_view) {
@@ -349,6 +409,7 @@ var Josh = Josh || {};
       var handler = getHandler(cmd);
 
       // Added for Blui - UE4
+      console.log(callback);
       console.log(cmd +"--"+args+"--"+cmdtext)
       try {
         blu_event(cmd, args);

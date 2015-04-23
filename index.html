@@ -24,6 +24,9 @@
   <script src="js/example.js"></script>
   
   <script src="js/commands.js"></script>
+
+  <!-- Typed Library -->
+  <script src="js/typed.js"></script>
   <style type="text/css">
 	#center-panel {
 	  left:50%;
@@ -76,26 +79,19 @@
   // Change path.
   Josh.Instance.PathHandler.cd("/usr/me");
 
-  Josh.Instance.Shell.disable_user_input = true;
-  // Write to Screen
-  Josh.Instance.Shell.renderOutput("loading x3h0.one<br>Processing.<br>Loading Profile...", function(){
+  Josh.Instance.Shell.renderOutput("", function(){
     
   })
 
-  Josh.Instance.Shell.renderOutput("Running System Diagnostics ...", function(){
+  // initOutput = ["Running System Diagnostics .^1000.^1000.^1000",
+  //               "<br><br>WARNING: Malicious Process 'br2' found. ^2000",
+  //               "<br>killing 'br2' Process .^500.^500.^500",
+  //               "<br>ERROR!^500 unable to kill 'br2'<br><br> ^1000 use the ^100'kill'^100 command to manually terminate process."]
+
+  Josh.Instance.Shell.renderWaitOutput([initOutput.join(" ")], function(){
+    
   })
 
-  Josh.Instance.Shell.renderOutput("WARNING: Malicious Process 'br2' found.", function(){
-  })
-
-  Josh.Instance.Shell.renderOutput("killing 'br2' Process...", function(){
-  })
-
-  Josh.Instance.Shell.renderOutput("ERROR: unable to kill 'br2'<br> use the 'kill' command to manually terminate process.", function(){
-  })
-  Josh.Instance.Shell.disable_user_input = false;
-
-  Josh.Instance.Shell.activate();
 
 //  var history = new Josh.History();
 //  var killring = new Josh.KillRing();

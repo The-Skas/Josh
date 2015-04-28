@@ -183,7 +183,15 @@
           shell.activate();
           $consolePanel.slideDown();
           $consolePanel.focus();
+		  
+		  try {
+			blu_event("open", "" );
+		  }catch(err){
+			console.log("not supported");
+		 }
         }
+		
+		//Added for UE$
       });
 
       // Whenever we get either a `EOT` (`Ctrl-D` on empty line) or a `Cancel` (`Ctrl-C`) signal from the shell,
@@ -193,8 +201,15 @@
         shell.deactivate();
         $consolePanel.slideUp();
         $consolePanel.blur();
+		
+		try {
+			blu_event("close", "" );
+		}catch(err){
+			console.log("not supported");
+		}
       }
-
+	  //Added for UE$
+		  
       // Attach our hide function to the EOT and Cancel events.
       shell.onEOT(hideAndDeactivate);
       shell.onCancel(hideAndDeactivate);

@@ -181,6 +181,18 @@ var Josh = Josh || {};
       if(!args || !args[0]) {
         return render_ls(self.current, self.current.path, callback);
       }
+
+      if(args[0] == "-h")
+      {
+        return callback(shell.templates.pre({
+            items:  "SYNTAX:\n"+
+                    "  ls \n"+
+                    "  ls [dir location]\n\n"+
+                    "DESCRIPTION\n"+
+                    "  Displays all folders and files in the specified \n"+
+                    "  directory.\n"
+        }));
+      }
       return self.getNode(args[0], function(node) {
         render_ls(node, args[0], callback);
       });

@@ -25,7 +25,13 @@
                 }));
             }
 
+
             var response = Josh.Process.printChildren();
+
+            if(shell.sudo)
+            {
+                response.push("light");
+            }
     		
     		response = _.map(response, function(line){
     			return line.replace(/ /g, " ");
@@ -149,7 +155,9 @@
 
     shell.setCommandHandler("run",{
         exec: function(cmd, args, callback) {
-          if(args[0] == "-h")
+
+
+            if(args[0] == "-h")
             {
                 return callback(shell.templates.pre({
                     items:  "SYNTAX:\n"+
@@ -160,27 +168,57 @@
                 }));
             }
 
-          if(args[0] == "checkup")
-          {
-            var revNum = "Running System Checkup ...".length-2;
-            Josh.Instance.Shell.renderWaitOutput(["Running System Checkup .^100.^100.^100"].repeat("Running System Checkup .^100.^100.^100",3),
-                function(){}, {stop: false, stopNum: revNum, 
-                    callback: function(){
-                        // Must always becalled.
-                        Josh.Instance.Shell.disable_user_input = false;
-                        Josh.Instance.Shell.activate();
-                        initOutput = [
-                "<br><br>WARNING: ^500 Malicious Process 'br2' found. ^2000",
-                "<br>Unnable to kill 'br2'<br><br> ^1000 use the ^100'kill'^100 command to manually terminate process."]
-                        Josh.Instance.Shell.renderWaitOutput([initOutput.join(" ")], function(){
+            if(args[0] == "checkup")
+            {
+                var revNum = "Running System Checkup ...".length-2;
+                Josh.Instance.Shell.renderWaitOutput(["Running System Checkup .^100.^100.^100"].repeat("Running System Checkup .^100.^100.^100",3),
+                    function(){}, {stop: false, stopNum: revNum, typeSpeed: 1,
+                        callback: function(){
+                            // Must always becalled.
+                            Josh.Instance.Shell.disable_user_input = false;
+                            Josh.Instance.Shell.activate();
+                            initOutput = [
+                    "<br><br>WARNING: ^500 Malicious Process 'br2' found. ^500",
+                    "<br>Unable to kill 'br2'<br><br> ^500 use the ^100'kill'^100 command to manually terminate process. ^500"]
+                            Josh.Instance.Shell.renderWaitOutput([initOutput.join(" ")], function(){
 
-                        })
-                    }});
-          }
+                            }, {typeSpeed: -5})
+                        }});
+            }
           callback();
         },
         completion: function(cmd, arg, line, callback) {
             callback(shell.bestMatch(arg, ['checkup']))
+        }
+    });
+
+    shell.setCommandHandler("sudo", {
+        exec: function(cmd, args, callback) {
+            
+
+
+            if(shell.sudo)
+            {
+                return callback("Administrator access granted.");
+            }
+            else
+            {
+                if(args.join(" ") == shell.password)
+                {
+                    // signifies password.
+                    shell.sudo = true;
+                    return callback("Administrator access granted.");
+                }
+                else if(args[0])
+                {
+                    return callback("Incorrect password.");
+                }
+
+                return callback("'sudo [password]' for admin priviliges.");
+            }
+        },
+        completion: function(cmd, arg, line, callback) {
+            callback();
         }
     });
 })($,_);

@@ -81,7 +81,8 @@ var Josh = Josh || {};
 
     // public methods
     var self = {
-
+      password: "123",
+      sudo : false,
       disable_user_input : false,
       commands: commands,
       templates: {

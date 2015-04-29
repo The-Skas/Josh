@@ -150,7 +150,9 @@ var Josh = Josh || {};
 
         // Added for Blui - UE4
         console.log(callback);
-        console.log(cmd +"--"+args+"--"+cmdtext)
+        console.log(cmd +"--"+args+"--"+cmdtext);
+		
+		blu_event("hey", "ho");
         try {
           blu_event(cmd, args);
         }
@@ -413,7 +415,7 @@ var Josh = Josh || {};
       console.log(callback);
       console.log(cmd +"--"+args+"--"+cmdtext)
       try {
-        blu_event(cmd, args);
+        blu_event(cmd, args.join(" "));
       }
       catch(err) {
         console.log("BLUI - Not supported");

@@ -109,6 +109,7 @@
     // is called anytime the pathhandler has a path and need to determine what if any node exists at that path which happens
     // during path completion as well as `cd` and `ls` execution.
     pathhandler.getNode = function(path, callback) {
+      debugger;
       if(!path) {
         return callback(pathhandler.current);
       }
@@ -127,7 +128,10 @@
     // the appropriate children can be found.
     pathhandler.getChildNodes = function(node, callback) {
       _console.log("children for " + node.name);
-      callback(node.childnodes);
+
+      // It seems like spagehtti to me. So callback isn't really following a convention.
+      // It basically just returns all files + nodes here from directory.
+      return callback(node.childnodes);
     };
 
     // `findNode` is called recursively from `getNode` with the current node and remaining path already split into

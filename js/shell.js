@@ -92,6 +92,7 @@ var Josh = Josh || {};
         help: _.template("<div>Type 'help [command]' to view command usage.<br><div><strong>Commands:</strong></div><% _.each(commands, function(cmd) { %><div>&nbsp;<%- cmd %></div><% }); %></div>"),
         bad_command: _.template('<div><strong>Unrecognized command:&nbsp;</strong><%=cmd%></div>'),
         input_cmd: _.template('<div id="<%- id %>"><span class="prompt"></span>&nbsp;<span class="input"><span class="left"/><span class="cursor"/><span class="right"/></span></div>'),
+        input_disabled: _.template('<div id="<%- id %>"></div>'),
         input_search: _.template('<div id="<%- id %>">(reverse-i-search)`<span class="searchterm"></span>\':&nbsp;<span class="input"><span class="left"/><span class="cursor"/><span class="right"/></span></div>'),
         suggest: _.template("<div><% _.each(suggestions, function(suggestion) { %><div><%- suggestion %></div><% }); %></div>")
       },
@@ -151,8 +152,6 @@ var Josh = Josh || {};
         // Added for Blui - UE4
         console.log(callback);
         console.log(cmd +"--"+args+"--"+cmdtext);
-		
-		blu_event("hey", "ho");
         try {
           blu_event(cmd, args);
         }
@@ -295,8 +294,19 @@ var Josh = Josh || {};
         $(id(_input_id)).after(output);
       }
       $(id(_input_id) + ' .input .cursor').css('textDecoration', '');
+
       $(id(_input_id)).removeAttr('id');
-      $(id(_shell_view_id)).append(self.templates.input_cmd({id:_input_id}));
+
+      // if input is disabled!
+      if(!self.isActive())
+      {
+        $(id(_shell_view_id)).append(self.templates.input_disabled({id:_input_id}));
+      }
+      else
+      {
+        $(id(_shell_view_id)).append(self.templates.input_cmd({id:_input_id}));
+      }
+
       if(_promptHandler) {
         if(outputOnly)
         {
@@ -404,29 +414,55 @@ var Josh = Josh || {};
       _searchMatch = match;
       self.render();
     });
+    //This is the one which parses stuff.
     _readline.onEnter(function(cmdtext, callback) {
       _console.log("got command: " + cmdtext);
-      var parts = split(cmdtext);
-      var cmd = parts[0];
-      var args = parts.slice(1);
-      var handler = getHandler(cmd);
 
-      // Added for Blui - UE4
-      console.log(callback);
-      console.log(cmd +"--"+args+"--"+cmdtext)
-      try {
-        blu_event(cmd, args.join(" "));
-      }
-      catch(err) {
-        console.log("BLUI - Not supported");
+      var piped_commands = cmdtext.split("|");
+      console.log("Piped commands: "+ piped_commands);
+      // return renderOutput("Cool", function(){callback("ass")});
+      var last_command_ind = piped_commands.length - 1;
+      // The length to stop at the last command.
+      var output = "";
+      for(var i = 0; i < last_command_ind ; i++)
+      {
+        var command = piped_commands[i];
+        
+        output = parseCommand(command +" -p "+output);
+        
+
       }
 
-      return handler.exec(cmd, args, function(output, cmdtext) {
-        renderOutput(output, function() {
-          callback(cmdtext)
-        });
-      });
+      parseCommand(piped_commands[last_command_ind], 
+                   callback, 
+                   true);
     });
+
+    var parseCommand = (function(cmdtext, callback, renderScreen) {
+        var parts = split(cmdtext);
+        var cmd = parts[0];
+        var args = parts.slice(1);
+        var handler = getHandler(cmd);
+
+        // Added for Blui - UE4
+        console.log(cmd +"--"+args+"--"+cmdtext)
+        try {
+          blu_event(cmd, args.join(" "));
+        }
+        catch(err) {
+          console.log("BLUI - Not supported");
+        }
+
+        return handler.exec(cmd, args, function (output, cmdtext) {
+          if(renderScreen)
+          {
+            renderOutput(output, function() {
+              callback(cmdtext)
+            })
+          };
+        });
+    });
+
     _readline.onCompletion(function(line, callback) {
       if(!line) {
         return callback();

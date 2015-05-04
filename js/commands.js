@@ -38,6 +38,9 @@
     		});
     		
             callback(shell.templates.list({items: response}));
+
+            // Return value are used for pipes
+            return response;
         },
         completion: function(cmd, arg, line, callback) {
             callback(shell.bestMatch(arg, ['']))
@@ -178,11 +181,12 @@
                             Josh.Instance.Shell.disable_user_input = false;
                             Josh.Instance.Shell.activate();
                             initOutput = [
-                    "<br><br>WARNING: ^500 Malicious Process 'br2' found. ^500",
+                    "WARNING: ^500 Malicious Process 'br2' found. ^500",
                     "<br>Unable to kill 'br2'<br><br> ^500 use the ^100'kill'^100 command to manually terminate process. ^500"]
                             Josh.Instance.Shell.renderWaitOutput([initOutput.join(" ")], function(){
 
                             }, {typeSpeed: -5})
+
                         }});
             }
           callback();
@@ -192,9 +196,88 @@
         }
     });
 
+    shell.setCommandHandler("find", {
+        /**
+         * Recursively earches through directories for files and directories.
+         * @param  {[type]} path [description]
+         * @return {[type]}      [description]
+         */
+        _recursivePath: function(path){
+            if(path == undefined)
+            {
+                return [];
+            }
+
+            var output = [];
+            //Not surrounding path with an array causes an error :/
+            var children = Josh.Instance.PathHandler.ls("",[path], function(node){
+                    return node;
+            });
+            debugger;
+            var directories = _.map(children, function(child){
+                //Make sure is a directory or a file
+                if(child.path)
+                {   
+                    var file = "";
+
+                    if(child.data)
+                    {
+                        output.push(child.path+"/"+child.name);
+                    }
+                    //Make sure is a directory and NOT a file.
+                    else
+                    {
+                        output.push(child.path);
+                        return child.path;
+                    }
+                }
+            }).clean(undefined);
+
+            var _this = this;
+            _.each(directories, function(element,i){
+                debugger;
+                output = output.concat(_this._recursivePath(element));
+            })
+            return output;
+        },
+        exec: function(cmd, args, callback) {
+            // return this._someFunc("some");
+            // render one more time when shell is activated
+            
+
+            if(args[0] == "-h" || !args[0])
+            {
+                return callback(shell.templates.pre({
+                    items:  "SYNTAX:\n"+
+                            "  find [file_name]/[directory_name]\n\n"+
+                            "DESCRIPTION\n"+
+                            "  Searches for the file/directory name specified."+
+                            "\n"
+                }));
+            }
+
+            if(args.indexOf("|") != -1)
+            {
+                //do appropriate pipe command.
+            }
+            var matches = this._recursivePath("");
+
+            matches = matches.filter(function(value) {
+                return value.includes(args[0]);
+            })
+            callback(shell.templates.list({items: matches}));
+
+        },
+        completion: function(cmd, arg, line, callback) {
+            callback();
+        }
+    })
+
     shell.setCommandHandler("sudo", {
         exec: function(cmd, args, callback) {
-            
+           
+
+            // It exists
 
 
             if(shell.sudo)

@@ -47,7 +47,10 @@ var Josh = Josh || {};
       },
       getPrompt: function() {
         return _shell.templates.prompt({node: self.current});
-      }
+      },
+
+      ls: ls,
+
     };
 
     _shell.setCommandHandler("ls", {
@@ -193,8 +196,9 @@ var Josh = Josh || {};
                     "  directory.\n"
         }));
       }
+
       return self.getNode(args[0], function(node) {
-        render_ls(node, args[0], callback);
+        return render_ls(node, args[0], callback);
       });
     }
 
@@ -214,6 +218,8 @@ var Josh = Josh || {};
         console.log(path);
         console.log(children);
         callback(_shell.templates.ls({nodes: children}));
+   
+        return children;
       });
     }
 

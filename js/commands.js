@@ -101,16 +101,32 @@
             }
 
             var files = Josh.Instance.PathHandler.files;
-            
+
+            var file_name = args[0];
+            if(arg.includes("/"))
+            {
+                arg = arg.split("/");
+
+                file_name = arg.pop();
+
+                arg = arg.join("/");
+            }
+
             var current_path = Josh.Instance.PathHandler.current.path;
 
             var file_to_print = null;
 
             if(files[current_path])
             {
-                file_to_print = files[current_path][arg];
+                file_to_print = files[current_path][file_name];
             }
-            
+            //If args[1] exists, this means we have
+            //atleast 2 arguements
+            else if(files[arg])
+            {
+                file_to_print = files[arg][file_name];
+            }
+            debugger;
             if(file_to_print) {
                 response = file_to_print.data;
             }
@@ -213,7 +229,6 @@
             var children = Josh.Instance.PathHandler.ls("",[path], function(node){
                     return node;
             });
-            debugger;
             var directories = _.map(children, function(child){
                 //Make sure is a directory or a file
                 if(child.path)
@@ -235,7 +250,6 @@
 
             var _this = this;
             _.each(directories, function(element,i){
-                debugger;
                 output = output.concat(_this._recursivePath(element));
             })
             return output;
@@ -255,17 +269,33 @@
                             "\n"
                 }));
             }
-
+            console.log(args);
             if(args.indexOf("|") != -1)
             {
+                var pip_ind = args.indexOf("|");
+
+                args.pop(pip_ind);
+
                 //do appropriate pipe command.
             }
             var matches = this._recursivePath("");
 
             matches = matches.filter(function(value) {
                 return value.includes(args[0]);
-            })
-            callback(shell.templates.list({items: matches}));
+            });
+
+            //This signifies we issued a pipe command, eg:
+            //      find .txt | cat 
+            if(args.indexOf("|") != -1)
+            {
+                return matches;
+            }
+            else
+            {
+                callback(shell.templates.list({items: matches}));
+                return matches;
+            }
+            
 
         },
         completion: function(cmd, arg, line, callback) {

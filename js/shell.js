@@ -423,17 +423,17 @@ var Josh = Josh || {};
       // return renderOutput("Cool", function(){callback("ass")});
       var last_command_ind = piped_commands.length - 1;
       // The length to stop at the last command.
-      var output = "";
+      var output = [];
       for(var i = 0; i < last_command_ind ; i++)
       {
         var command = piped_commands[i];
-        
-        output = parseCommand(command +" -p "+output);
+        debugger;
+        output = parseCommand(command+" "+output.join(" ")+" | ");
         
 
       }
 
-      parseCommand(piped_commands[last_command_ind], 
+      parseCommand(piped_commands[last_command_ind]+" "+output.join(" "), 
                    callback, 
                    true);
     });

@@ -109,7 +109,6 @@
     // is called anytime the pathhandler has a path and need to determine what if any node exists at that path which happens
     // during path completion as well as `cd` and `ls` execution.
     pathhandler.getNode = function(path, callback) {
-      debugger;
       if(!path) {
         return callback(pathhandler.current);
       }

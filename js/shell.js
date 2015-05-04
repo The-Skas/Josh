@@ -428,7 +428,7 @@ var Josh = Josh || {};
       {
         var command = piped_commands[i];
         debugger;
-        output = parseCommand(command+" "+output.join(" ")+" | ");
+        output = [parseCommand(command+" "+output.join(" ")+" | ")];
         
 
       }

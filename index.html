@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Shell testbed</title>
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Just+Another+Hand' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
+  <script>Josh = {Debug: true };</script>
+  <script src="js/helpers.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/killring.js"></script>
+  <script src="js/readline.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/pathhandler.js"></script>
+  
+  <script src="js/process.js"></script>
+  
+  <script src="js/example.js"></script>
+  
+  <script src="js/commands.js"></script>
+
+  <!-- Typed Library -->
+  <script src="js/typed.js"></script>
+  <style type="text/css">
+	#center-panel {
+	  left:50%;
+	  top:50%;
+	  position: fixed;
+    }
+    #shell-panel {
+      height: 600px;
+      width: 800px;
+	  
+	  margin-left: -400px;
+	  margin-top: -300px;
+	  position: relative;
+      background-color: #002f05;
+      color: #00fe00;
+      padding: 20px 20px 20px 20px;
+      font-family: 'Source Code Pro';
+      overflow: scroll;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      border: 1px dashed #E6EBE0;
+    }
+	
+	#chat_box {
+      height: 380px;
+      width: 300px;
+      max-width: 100%;
+      max-height: 100%;
+      position: absolute;
+      background-image: url(/resources/sticky.png);
+      background-size: cover;
+      background-position-x: -20px;
+      background-position-y: -20px;
+      padding-left: 10px;
+      margin-left: 10px;
+
+      -webkit-transform: rotate(-30deg);
+      -moz-transform: rotate(-30deg);
+      -o-transform: rotate(-30deg);
+      -ms-transform: rotate(-30deg);
+      transform: rotate(-30deg);
+  }
+  #chat_text{
+    width: 90%;
+    height: 50%;
+    padding-top:10%;
+    margin: auto auto;
+    positon: relative;
+    font-family: 'Just Another Hand', cursive;
+    font-size: 42px;
+  }
+  </style>
+  <script>
+    $(function() {
+      $( "#chat_box" ).draggable();
+      $( "#chat_box").element
+    });
+  </script>
+</head>
+<body style="background-color: black;">
+  <div id="center-panel">
+
+  	<div id="shell-panel">
+  	  <div id="shell-view">
+  		<p>Press <strong>~</strong> to activate console.</p>
+
+  	  </div>
+  	</div>
+
+  </div>
+
+  <div id="chat_box">
+    <div id="chat_text">
+        -  run checkup
+        <br>
+        - find file see.txt
+        <br>
+        - use pipes: "find see | cat"
+
+      <div>
+  </div>
+
+<script>
+	//Setup Processes;
+	new Josh.Process("br2", "1");
+	new Josh.Process("sh", "1");
+	new Josh.Process("init", "0");
+  
+
+  // Setup Files.
+  Josh.Instance.PathHandler.createFile("/usr/me", "see.txt", 
+    "Don't listen \n"+
+    "Nothing is real.\n"+
+    "Hide while you can.\n");
+
+  // Change path.
+  Josh.Instance.PathHandler.cd("/usr/me");
+
+  Josh.Instance.Shell.renderOutput("", function(){
+    
+  })
+
+  // initOutput = ["Running System Diagnostics .^1000.^1000.^1000",
+  //               "<br><br>WARNING: Malicious Process 'br2' found. ^2000",
+  //               "<br>killing 'br2' Process .^500.^500.^500",
+  //               "<br>ERROR!^500 unable to kill 'br2'<br><br> ^1000 use the ^100'kill'^100 command to manually terminate process."]
+
+  Josh.Instance.Shell.renderWaitOutput([initOutput.join(" ")], function(){
+    
+  })
+
+
+//  var history = new Josh.History();
+//  var killring = new Josh.KillRing();
+//  var cmd1 = new Josh.Input({id: "cmd1"});
+//  var cmd2 = new Josh.Input({id: "cmd2"});
+</script>
+</body>
+</html>

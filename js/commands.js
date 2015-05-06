@@ -281,10 +281,9 @@
             var matches = this._recursivePath("");
 
             matches = matches.filter(function(value) {
-                if(value)
-                {
-                    return value.includes(args[0]);
-                }
+               
+                return value.indexOf(args[0]) >= 0;
+                
             });
 
             //This signifies we issued a pipe command, eg:

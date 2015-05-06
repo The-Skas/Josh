@@ -281,13 +281,9 @@
             var matches = this._recursivePath("");
 
             matches = matches.filter(function(value) {
-<<<<<<< HEAD
-                return value.includes(args[0]);
-=======
                
                 return value.indexOf(args[0]) >= 0;
-                
->>>>>>> gh-pages
+
             });
 
             //This signifies we issued a pipe command, eg:

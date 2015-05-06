@@ -26,6 +26,7 @@
   
   <script src="js/commands.js"></script>
 
+  <script src="js/events.js"></script>
   <!-- Typed Library -->
   <script src="js/typed.js"></script>
   <style type="text/css">
@@ -57,11 +58,8 @@
       max-width: 100%;
       max-height: 100%;
       position: absolute;
-<<<<<<< HEAD
-      background-image: url(/resources/sticky.png);
-=======
-      background-image: url(../sticky.png);
->>>>>>> gh-pages
+
+      background-image: url(sticky.png);
       background-size: cover;
       background-position-x: -20px;
       background-position-y: -20px;
@@ -87,7 +85,6 @@
   <script>
     $(function() {
       $( "#chat_box" ).draggable();
-      $( "#chat_box").element
     });
   </script>
 </head>
@@ -116,13 +113,14 @@
 
 <script>
 	//Setup Processes;
-	new Josh.Process("br2", "1");
+	var br2 = new Josh.Process("br2", "1");
+  br2.state = "Un-Killable";
 	new Josh.Process("sh", "1");
 	new Josh.Process("init", "0");
   
 
   // Setup Files.
-  Josh.Instance.PathHandler.createFile("/usr/me", "see.txt", 
+  Josh.Instance.PathHandler.createFile("/lost+found", "see.txt", 
     "Don't listen \n"+
     "Nothing is real.\n"+
     "Hide while you can.\n");

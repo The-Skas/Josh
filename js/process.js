@@ -25,7 +25,11 @@
 
 		if(_index != -1)
 		{
-			Process.children.splice(_index, 1);
+			if(this.state == "Ready")
+			{
+				Process.children.splice(_index, 1);
+				return true;
+			}
 		};
 	}
 	
@@ -108,8 +112,10 @@
 			
 			if(proc[column] == value)
 			{
-				proc.kill();
-				++count_killed;
+				if(proc.kill())
+				{
+					++count_killed;
+				}
 			}
 		}
 		

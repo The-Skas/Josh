@@ -418,9 +418,16 @@ var Josh = Josh || {};
     _readline.onEnter(function(cmdtext, callback) {
       _console.log("got command: " + cmdtext);
 
+      
+
       var piped_commands = cmdtext.split("|");
-      console.log("Piped commands: "+ piped_commands);
-      // return renderOutput("Cool", function(){callback("ass")});
+
+      //****
+      //Handle Level
+      //****
+      LevelState.current.exec(piped_commands
+        );
+
       var last_command_ind = piped_commands.length - 1;
       // The length to stop at the last command.
       var output = [];

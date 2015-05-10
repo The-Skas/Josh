@@ -103,7 +103,7 @@
             var files = Josh.Instance.PathHandler.files;
 
             var file_name = args[0];
-            if(arg.includes("/"))
+            if(arg.indexOf("/") != -1)
             {
                 arg = arg.split("/");
 
